@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0a0a" />
+<title>Poolbase · Einlass</title>
+<style>
+  :root {
+    --bg: #0a0a0a; --fg: #f5f5f0; --muted: #6b6b66;
+    --accent: #d4ff3a; --ok: #16c172; --bad: #ff3b3b;
+    --warn: #ffb020; --border: #1f1f1f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    height: 100%; background: var(--bg); color: var(--fg);
+    font-family: 'Courier New', ui-monospace, monospace;
+    overflow: hidden; overscroll-behavior: none;
+  }
+  body {
+    display: flex; flex-direction: column;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  header {
+    padding: 14px 20px 10px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .brand { font-size: 11px; letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; }
+  .brand strong { color: var(--accent); font-weight: 700; }
+  .counter { font-size: 11px; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
+  .counter span { color: var(--fg); font-weight: 700; }
+
+  main { flex: 1; position: relative; overflow: hidden; }
+  #video {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; background: #000;
+  }
+
+  .frame { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+  .reticle {
+    width: min(70vw, 320px); aspect-ratio: 1;
+    border: 2px solid rgba(245,245,240,0.35); border-radius: 18px; position: relative;
+  }
+  .reticle::before, .reticle::after,
+  .reticle > i::before, .reticle > i::after {
+    content: ''; position: absolute; width: 28px; height: 28px; border: 3px solid var(--accent);
+  }
+  .reticle::before { top: -3px; left: -3px; border-right: none; border-bottom: none; border-top-left-radius: 14px; }
+  .reticle::after { top: -3px; right: -3px; border-left: none; border-bottom: none; border-top-right-radius: 14px; }
+  .reticle > i::before { bottom: -3px; left: -3px; border-right: none; border-top: none; border-bottom-left-radius: 14px; }
+  .reticle > i::after { bottom: -3px; right: -3px; border-left: none; border-top: none; border-bottom-right-radius: 14px; }
+
+  .flash {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 24px; opacity: 0; pointer-events: none;
+    transition: opacity 120ms ease-out;
+  }
+  .flash.show { opacity: 1; }
+  .flash.ok  { background: var(--ok); color: #000; }
+  .flash.bad { background: var(--bad); color: #fff; }
+  .flash .glyph { font-size: clamp(120px, 30vw, 220px); font-weight: 900; line-height: 1; margin-bottom: 8px; }
+  .flash .label { font-size: clamp(28px, 7vw, 44px); font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
+  .flash .hint { margin-top: 16px; font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.75; }
+
+  .status {
+    padding: 12px 20px; border-top: 1px solid var(--border);
+    font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted); display: flex; align-items: center; gap: 10px; min-height: 44px;
+  }
+  .status .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--warn); box-shadow: 0 0 12px currentColor; }
+  .status.scanning .dot { background: var(--accent); animation: pulse 1s infinite; }
+  .status.scanning { color: var(--fg); }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .controls {
+    padding: 14px 16px; border-top: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  button {
+    appearance: none; background: transparent; border: 1px solid var(--border);
+    color: var(--fg); font-family: inherit; font-size: 13px;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 14px 12px; border-radius: 10px; cursor: pointer;
+    transition: transform 80ms ease;
+  }
+  button:active { transform: scale(0.97); }
+  button.primary { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 800; }
+  button.danger { border-color: #3a1f1f; color: #ff8a8a; }
+
+  .start {
+    position: absolute; inset: 0; background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 32px; text-align: center; z-index: 10;
+  }
+  .start h1 {
+    font-size: clamp(34px, 9vw, 56px); font-weight: 900;
+    letter-spacing: -0.02em; line-height: 0.95; margin-bottom: 12px;
+  }
+  .start h1 em { font-style: normal; color: var(--accent); }
+  .start p {
+    color: var(--muted); font-size: 13px; letter-spacing: 0.15em;
+    text-transform: uppercase; margin-bottom: 32px; max-width: 320px;
+  }
+  .start button.primary { padding: 18px 28px; font-size: 14px; }
+  .err { color: var(--bad); font-size: 12px; margin-top: 16px; max-width: 320px; letter-spacing: 0.05em; text-transform: none; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div class="start" id="start">
+  <h1>POOL<em>BASE</em></h1>
+  <p>Kamera-Zugriff erforderlich.<br/>QR-Code vor die Linse halten.</p>
+  <button class="primary" id="btnStart">Scanner starten</button>
+  <div class="err" id="startErr"></div>
+</div>
+
+<header>
+  <div class="brand"><strong>●</strong> EINLASS · LIVE</div>
+  <div class="counter">OK <span id="okCount">0</span> · NEIN <span id="badCount">0</span></div>
+</header>
+
+<main>
+  <video id="video" playsinline muted autoplay></video>
+  <div class="frame"><div class="reticle"><i></i></div></div>
+  <div class="flash" id="flash">
+    <div class="glyph" id="flashGlyph">✓</div>
+    <div class="label" id="flashLabel">Einlass</div>
+    <div class="hint">Weiter zum nächsten Gast</div>
+  </div>
+</main>
+
+<div class="status" id="status">
+  <span class="dot"></span>
+  <span id="statusText">Bereit</span>
+</div>
+
+<div class="controls">
+  <button id="btnPause">Pause</button>
+  <button class="danger" id="btnReset">Zähler 0</button>
+</div>
+
+<script>
+/* ============================================================
+   KONFIGURATION
+   Der gültige QR-Inhalt ist:  58cNO4MVf4JdKx706e9N
+   (Hash davon steht hier — Klartext nirgends im Repo)
+   ============================================================ */
+const VALID_HASH  = "821f4a7f84d7c28fb164b8ba07df63d2789dce8f66c8a00c271a6606ce0dfd47";
+const COOLDOWN_MS = 1800;
+/* ============================================================ */
+
+const video       = document.getElementById('video');
+const flashEl     = document.getElementById('flash');
+const flashGlyph  = document.getElementById('flashGlyph');
+const flashLabel  = document.getElementById('flashLabel');
+const statusEl    = document.getElementById('status');
+const statusText  = document.getElementById('statusText');
+const okCountEl   = document.getElementById('okCount');
+const badCountEl  = document.getElementById('badCount');
+const startScreen = document.getElementById('start');
+const startErr    = document.getElementById('startErr');
+
+let stream = null, scanning = false, paused = false;
+let cooldownUntil = 0, lastDecoded = '', lastDecodedAt = 0;
+let okCount = 0, badCount = 0;
+let detector = null;
+
+async function sha256(text) {
+  const buf = new TextEncoder().encode(text);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+let audioCtx = null;
+function beep(freq, durationMs, type='sine', volume=0.25) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.value = freq; gain.gain.value = volume;
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start();
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + durationMs/1000);
+    osc.stop(audioCtx.currentTime + durationMs/1000);
+  } catch(e) {}
+}
+
+function showFlash(kind) {
+  flashEl.classList.remove('ok','bad');
+  if (kind === 'ok') {
+    flashEl.classList.add('ok','show');
+    flashGlyph.textContent = '✓';
+    flashLabel.textContent = 'Einlass';
+    beep(880, 140, 'square', 0.3);
+    setTimeout(() => beep(1320, 180, 'square', 0.3), 130);
+    if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+  } else {
+    flashEl.classList.add('bad','show');
+    flashGlyph.textContent = '✕';
+    flashLabel.textContent = 'Abweisen';
+    beep(180, 350, 'sawtooth', 0.35);
+    if (navigator.vibrate) navigator.vibrate([180, 80, 180]);
+  }
+  setTimeout(() => flashEl.classList.remove('show'), 900);
+}
+
+async function startCamera() {
+  startErr.textContent = '';
+
+  if (!('BarcodeDetector' in window)) {
+    startErr.innerHTML = 'Dein Browser unterstützt keine native QR-Erkennung. Bitte nutze Chrome (Android) oder Safari 17+ (iOS).';
+    return;
+  }
+  try {
+    const formats = await BarcodeDetector.getSupportedFormats();
+    if (!formats.includes('qr_code')) {
+      startErr.textContent = 'QR-Format vom Browser nicht unterstützt.';
+      return;
+    }
+    detector = new BarcodeDetector({ formats: ['qr_code'] });
+  } catch (e) {
+    startErr.textContent = 'Detector-Fehler: ' + (e.message || e.name);
+    return;
+  }
+
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: { ideal: 'environment' },
+        width:  { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    });
+    video.srcObject = stream;
+    await video.play();
+    startScreen.style.display = 'none';
+    scanning = true;
+    statusEl.classList.add('scanning');
+    statusText.textContent = 'Scanne…';
+    scanLoop();
+  } catch (e) {
+    startErr.textContent = 'Kamera nicht verfügbar: ' + (e.message || e.name);
+  }
+}
+
+async function scanLoop() {
+  if (!scanning) return;
+  if (!paused && Date.now() > cooldownUntil && video.readyState >= 2) {
+    try {
+      const results = await detector.detect(video);
+      if (results && results.length > 0 && results[0].rawValue) {
+        handleDecoded(results[0].rawValue);
+      }
+    } catch(e) { /* Detector-Hiccups ignorieren */ }
+  }
+  setTimeout(() => requestAnimationFrame(scanLoop), 120);
+}
+
+async function handleDecoded(text) {
+  const now = Date.now();
+  if (text === lastDecoded && (now - lastDecodedAt) < COOLDOWN_MS) return;
+  lastDecoded = text;
+  lastDecodedAt = now;
+  cooldownUntil = now + COOLDOWN_MS;
+
+  const hash = await sha256(text);
+  if (hash === VALID_HASH.toLowerCase()) {
+    okCount++;
+    okCountEl.textContent = okCount;
+    showFlash('ok');
+    statusText.textContent = 'Gültig · ' + new Date().toLocaleTimeString();
+  } else {
+    badCount++;
+    badCountEl.textContent = badCount;
+    showFlash('bad');
+    statusText.textContent = 'Ungültig · ' + new Date().toLocaleTimeString();
+  }
+}
+
+document.getElementById('btnStart').addEventListener('click', startCamera);
+
+document.getElementById('btnPause').addEventListener('click', (e) => {
+  paused = !paused;
+  e.target.textContent = paused ? 'Weiter' : 'Pause';
+  statusEl.classList.toggle('scanning', !paused);
+  statusText.textContent = paused ? 'Pausiert' : 'Scanne…';
+});
+
+document.getElementById('btnReset').addEventListener('click', () => {
+  if (!confirm('Zähler wirklich auf 0 setzen?')) return;
+  okCount = 0; badCount = 0;
+  okCountEl.textContent = 0;
+  badCountEl.textContent = 0;
+});
+
+let wakeLock = null;
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen');
+  } catch(e) {}
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') requestWakeLock();
+});
+requestWakeLock();
+</script>
+</body>
+</html>

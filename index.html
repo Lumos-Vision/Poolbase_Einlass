@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<title>POOLBASE — Einladung</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: "Pacifico", "Brush Script MT", "Lucida Handwriting", cursive;
+    --font-bold: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
+    --bg-deep: #06243d;
+    --bg-mid: #0d3a5e;
+    --water: #2a7eb3;
+    --water-bright: #6cc3e8;
+    --coral: #ff4530;
+    --gold: #ffb347;
+    --paper: #f4ede0;
+    --paper-warm: #ebe0c8;
+    --ink: #0a1a22;
+    --ok: #2ecc71;
+    --ok-dark: #1f8a4c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100%;
+    background: var(--bg-deep);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% -10%, rgba(108,195,232,0.4), transparent 50%),
+      radial-gradient(ellipse at 20% 30%, rgba(108,195,232,0.15), transparent 40%),
+      radial-gradient(ellipse at 80% 70%, rgba(255,69,48,0.08), transparent 50%),
+      linear-gradient(180deg, #0d3a5e 0%, #06243d 60%, #03121f 100%);
+    z-index: -2;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.06 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.4;
+  }
+
+  .rays {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.5;
+    background:
+      linear-gradient(180deg,
+        rgba(108,195,232,0.25) 0%,
+        rgba(108,195,232,0.08) 30%,
+        transparent 60%);
+    mask-image: repeating-linear-gradient(105deg,
+      transparent 0px,
+      black 40px,
+      transparent 120px,
+      black 200px,
+      transparent 260px);
+    -webkit-mask-image: repeating-linear-gradient(105deg,
+      transparent 0px,
+      black 40px,
+      transparent 120px,
+      black 200px,
+      transparent 260px);
+    animation: drift 12s ease-in-out infinite;
+  }
+  @keyframes drift {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-3%); }
+  }
+
+  .bubble {
+    position: fixed;
+    bottom: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), rgba(108,195,232,0.15));
+    pointer-events: none;
+    z-index: -1;
+    animation: rise linear infinite;
+  }
+  @keyframes rise {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-110vh) translateX(20px); opacity: 0; }
+  }
+
+  .view {
+    display: none;
+    min-height: 100vh;
+    padding: 1.5rem 1rem 3rem;
+  }
+  .view.active { display: block; animation: fadeIn 0.5s ease-out; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .wrap { max-width: 680px; margin: 0 auto; }
+
+  .hero {
+    text-align: center;
+    padding: 0.5rem 0 1.2rem;
+  }
+  .hero-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: clamp(2.5rem, 10vw, 4.5rem);
+    line-height: 0.95;
+    letter-spacing: 0.18em;
+    background: linear-gradient(180deg, #ffffff 0%, var(--water-bright) 40%, var(--water) 70%, var(--coral) 110%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 50px rgba(108,195,232,0.25);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+  .hero-meta {
+    margin-top: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    color: var(--water-bright);
+    opacity: 0.85;
+  }
+  .hero-meta::before,
+  .hero-meta::after {
+    content: " ◆ ";
+    color: var(--coral);
+    opacity: 0.7;
+  }
+
+  .invite-card {
+    background: linear-gradient(145deg, var(--paper) 0%, var(--paper-warm) 100%);
+    color: var(--ink);
+    border-radius: 4px;
+    padding: 1.6rem 1.3rem;
+    box-shadow:
+      0 25px 60px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(108,195,232,0.25),
+      inset 0 0 0 1px rgba(255,255,255,0.4);
+    position: relative;
+  }
+  .invite-card::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px dashed rgba(10,26,34,0.2);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .codex-head {
+    text-align: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid rgba(10,26,34,0.15);
+  }
+  .codex-head h2 {
+    font-family: var(--font-display); font-weight: normal;
+    font-size: 2rem;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+  }
+  .codex-head .sub {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--ink);
+    opacity: 0.55;
+    margin-top: 0.3rem;
+  }
+
+  .rule {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 0.7rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px dotted rgba(10,26,34,0.15);
+  }
+  .rule:last-of-type { border-bottom: none; }
+  .rule .num {
+    font-family: var(--font-display); font-weight: normal;
+    font-size: 1.3rem;
+    color: var(--coral);
+    line-height: 1.2;
+  }
+  .rule h3 {
+    font-family: var(--font-display); font-weight: normal;
+    font-size: 1.15rem;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    display: inline;
+  }
+  .rule h3::after {
+    content: " — ";
+    color: rgba(10,26,34,0.4);
+    font-family: var(--font-mono);
+    font-weight: normal;
+  }
+  .rule p {
+    display: inline;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: rgba(10,26,34,0.85);
+  }
+  .rule p em {
+    font-style: italic;
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .consequence-box {
+    margin-top: 0.9rem;
+    padding: 0.65rem 0.85rem;
+    border-left: 3px solid var(--coral);
+    background: rgba(255,69,48,0.06);
+  }
+  .consequence-box h4 {
+    font-family: var(--font-display); font-weight: normal;
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    color: var(--ink);
+  }
+  .consequence-box p {
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: rgba(10,26,34,0.85);
+  }
+
+  .form-section {
+    margin-top: 1.3rem;
+    padding-top: 1.3rem;
+    border-top: 2px solid var(--ink);
+  }
+  .field { margin-bottom: 0.9rem; }
+  .field label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+  }
+  .field input[type="text"] {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: none;
+    border-bottom: 2px solid var(--ink);
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--ink);
+    transition: border-color 0.2s;
+  }
+  .field input[type="text"]:focus {
+    outline: none;
+    border-bottom-color: var(--coral);
+  }
+  .field input[type="text"].error {
+    border-bottom-color: var(--coral);
+    animation: shake 0.4s;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  .check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    margin: 1rem 0;
+    cursor: pointer;
+    user-select: none;
+  }
+  .check-row input { display: none; }
+  .check-row .box {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--ink);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+  .check-row input:checked + .box {
+    background: var(--ok);
+    border-color: var(--ok-dark);
+  }
+  .check-row input:checked + .box::after {
+    content: "✓";
+    color: white;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  .check-row.error .box {
+    border-color: var(--coral);
+    animation: shake 0.4s;
+  }
+  .check-row span.label {
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--ink);
+  }
+
+  .btn-row {
+    margin-top: 1.1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .btn-next {
+    background: var(--ok);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    font-family: var(--font-bold); font-weight: 800;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    border-radius: 2px;
+    box-shadow: 0 5px 0 var(--ok-dark), 0 10px 25px rgba(46,204,113,0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-transform: uppercase;
+  }
+  .btn-next:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 0 var(--ok-dark), 0 14px 32px rgba(46,204,113,0.4);
+  }
+  .btn-next:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 var(--ok-dark), 0 4px 10px rgba(46,204,113,0.25);
+  }
+  .btn-next .arrow {
+    display: inline-block;
+    margin-left: 0.4rem;
+    transition: transform 0.2s;
+  }
+  .btn-next:hover .arrow { transform: translateX(4px); }
+
+  .footer-note {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    opacity: 0.4;
+  }
+
+  #view-pass {
+    display: none;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+  }
+  #view-pass.active { display: flex; animation: fadeIn 0.5s ease-out; }
+
+  .pass-wrap { width: 100%; max-width: 480px; }
+
+  .pass {
+    background: var(--paper);
+    color: var(--ink);
+    position: relative;
+    box-shadow:
+      0 35px 80px rgba(0,0,0,0.55),
+      0 0 0 1px rgba(108,195,232,0.3);
+    overflow: hidden;
+  }
+  .pass::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: repeating-linear-gradient(90deg,
+      var(--coral) 0 18px,
+      var(--ink) 18px 36px,
+      var(--water) 36px 54px,
+      var(--ink) 54px 72px
+    );
+  }
+  .pass::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 6px;
+    background: repeating-linear-gradient(90deg,
+      var(--coral) 0 18px,
+      var(--ink) 18px 36px,
+      var(--water) 36px 54px,
+      var(--ink) 54px 72px
+    );
+  }
+
+  .pass-inner { padding: 2rem 1.5rem 1.6rem; }
+
+  .pass-head {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 0.7rem;
+    margin-bottom: 1rem;
+  }
+  .pass-head .logo {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 1.15rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+  }
+
+  .pass-status {
+    text-align: center;
+    padding: 1rem 0;
+    position: relative;
+  }
+  .status-label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.35em;
+    opacity: 0.55;
+    margin-bottom: 0.5rem;
+  }
+  .status-main {
+    font-family: var(--font-display); font-weight: normal;
+    font-size: clamp(2rem, 7.5vw, 2.8rem);
+    color: var(--ok-dark);
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+  }
+
+  .pass-data {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem;
+    margin: 1rem 0;
+    padding: 0.9rem 0;
+    border-top: 1px dashed rgba(10,26,34,0.3);
+    border-bottom: 1px dashed rgba(10,26,34,0.3);
+  }
+  .pass-data .cell { display: flex; flex-direction: column; }
+  .pass-data .k {
+    font-family: var(--font-mono);
+    font-size: 0.53rem;
+    letter-spacing: 0.25em;
+    opacity: 0.55;
+    margin-bottom: 0.25rem;
+  }
+  .pass-data .v {
+    font-family: var(--font-display); font-weight: normal;
+    font-size: 1.25rem;
+    word-break: break-word;
+    line-height: 1.2;
+  }
+  .pass-data .v.small {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+  }
+  .pass-data .cell.full { grid-column: 1 / -1; }
+
+  .pass-foot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0.9rem;
+  }
+  .pass-foot .signature {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.25em;
+    text-align: center;
+    opacity: 0.55;
+    line-height: 1.5;
+  }
+
+  .actions {
+    margin-top: 1.3rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    align-items: center;
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--paper);
+    border: 1px solid rgba(244,237,224,0.4);
+    padding: 0.55rem 1.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.25em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--water-bright);
+    color: var(--water-bright);
+  }
+  .legal-note {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: rgba(244,237,224,0.5);
+    max-width: 420px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  @media (max-width: 520px) {
+    .pass-data { grid-template-columns: 1fr; }
+    .invite-card { padding: 1.3rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="rays"></div>
+
+<main id="view-invite" class="view active">
+  <div class="wrap">
+
+    <header class="hero">
+      <h1 class="hero-title">POOLBASE</h1>
+      <div class="hero-meta">Du bist eingeladen</div>
+    </header>
+
+    <section class="invite-card">
+      <div class="codex-head">
+        <h2>Verhaltenscodex</h2>
+        <div class="sub">Code of Conduct</div>
+      </div>
+
+      <div class="rule">
+        <div class="num">01</div>
+        <div><h3>Vielfalt</h3><p>Das Event versteht sich als inkludierender Raum. Keine Formen von Rassismus, Sexismus, Antisemitismus, Ableismus oder anderer Diskriminierung und Belästigung werden geduldet.</p></div>
+      </div>
+
+      <div class="rule">
+        <div class="num">02</div>
+        <div><h3>Solidarität</h3><p>Begegnet euch mit Freundlichkeit und Offenheit. Wenn Menschen sich unwohl fühlen, sprecht sie an und fragt, ob Unterstützung gewünscht ist. Gebt aufeinander Acht. &lt;3</p></div>
+      </div>
+
+      <div class="rule">
+        <div class="num">03</div>
+        <div><h3>Konsens</h3><p>Gespräche und Handlungen nur im gegenseitigen Einverständnis. Achte auf eindeutige Signale deines Gegenübers. <em>Nur Ja heißt Ja.</em></p></div>
+      </div>
+
+      <div class="rule">
+        <div class="num">04</div>
+        <div><h3>Grenzen</h3><p>Respektiert die individuellen Grenzen eures Gegenübers. Was für dich keine Grenze ist, kann für andere eine sein. <em>Communication is key.</em></p></div>
+      </div>
+
+      <div class="rule">
+        <div class="num">05</div>
+        <div><h3>Grenzüberschreitungen</h3><p>Herabwürdigende Kommentare, unerwünschte Annäherungsversuche, körperliche oder psychische Übergriffe führen zum sofortigen Ausschluss.</p></div>
+      </div>
+
+      <div class="rule">
+        <div class="num">06</div>
+        <div><h3>Safe Space</h3><p>Es gibt einen ausgewiesenen Safe Space als Rückzugs- und Ruheraum. Das Awareness-Team (Warnwesten) begleitet euch bei Bedarf und steht unterstützend zur Seite.</p></div>
+      </div>
+
+      <div class="rule">
+        <div class="num">07</div>
+        <div><h3>Photo Policy</h3><p>Keine unerlaubten Fotos und Videos von Anderen ohne ausdrückliche Zustimmung. Achtet auf die Privatsphäre aller Anwesenden.</p></div>
+      </div>
+
+      <div class="rule">
+        <div class="num">08</div>
+        <div><h3>Konsum</h3><p>Der Konsum illegaler Drogen ist nicht gestattet.</p></div>
+      </div>
+
+      <div class="rule">
+        <div class="num">09</div>
+        <div><h3>Respect the Place</h3><p>Nutzt die vorhandenen Toiletten, erleichtert euch nicht in die Natur und entsorgt Müll und Zigarettenstummel in Mülleimern.</p></div>
+      </div>
+
+      <div class="consequence-box">
+        <h4>→ Umgang mit Verstößen</h4>
+        <p>Bei Verstößen oder Beobachtung unerwünschten Verhaltens wendet euch an das Awareness-Team und/oder die Mitveranstaltenden. Je nach Situation führt ein Verstoß zum Ausschluss.</p>
+      </div>
+
+      <div class="form-section">
+        <div class="field">
+          <label for="name">Dein Name *</label>
+          <input type="text" id="name" autocomplete="name" placeholder="Vor- und Nachname" />
+        </div>
+
+        <label class="check-row" id="agreeRow">
+          <input type="checkbox" id="agree" />
+          <span class="box" aria-hidden="true"></span>
+          <span class="label">Ich habe die Hausordnung gelesen und akzeptiere sie.</span>
+        </label>
+
+        <div class="btn-row">
+          <button class="btn-next" id="nextBtn" type="button">
+            Weiter <span class="arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">※ poolbase · see you by the water ※ v7</div>
+  </div>
+</main>
+
+<section id="view-pass">
+  <div class="pass-wrap">
+    <div class="pass">
+      <div class="pass-inner">
+        <div class="pass-head">
+          <div class="logo">POOLBASE</div>
+        </div>
+
+        <div class="pass-status">
+          <div class="status-label">STATUS</div>
+          <div class="status-main">Zutritt gestattet</div>
+        </div>
+
+        <div class="pass-data">
+          <div class="cell full">
+            <span class="k">Teilnehmer:in</span>
+            <span class="v" id="passName">—</span>
+          </div>
+          <div class="cell">
+            <span class="k">Datum</span>
+            <span class="v small" id="passDate">—</span>
+          </div>
+          <div class="cell">
+            <span class="k">Uhrzeit</span>
+            <span class="v small" id="passTime">—</span>
+          </div>
+          <div class="cell full">
+            <span class="k">Bestätigung</span>
+            <span class="v small">Hausordnung gelesen &amp; akzeptiert</span>
+          </div>
+        </div>
+
+        <div class="pass-foot">
+          <div class="signature">
+            POOLBASE
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-secondary" id="backBtn" type="button">← Zurück</button>
+      <p class="legal-note">Dieser Bestätigungsbildschirm ist Teil der Einladung und kein rechtsverbindliches Dokument.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  function handleNext() {
+    var nameInput = document.getElementById('name');
+    var agreeCb = document.getElementById('agree');
+    var agreeRow = document.getElementById('agreeRow');
+    var viewInvite = document.getElementById('view-invite');
+    var viewPass = document.getElementById('view-pass');
+    var passName = document.getElementById('passName');
+    var passDate = document.getElementById('passDate');
+    var passTime = document.getElementById('passTime');
+
+    if (!nameInput || !agreeCb || !viewInvite || !viewPass) return;
+
+    var name = (nameInput.value || '').replace(/^\s+|\s+$/g, '').slice(0, 80);
+    var ok = true;
+
+    if (!name) {
+      nameInput.classList.add('error');
+      setTimeout(function(){ nameInput.classList.remove('error'); }, 600);
+      ok = false;
+    }
+    if (!agreeCb.checked) {
+      if (agreeRow) {
+        agreeRow.classList.add('error');
+        setTimeout(function(){ agreeRow.classList.remove('error'); }, 600);
+      }
+      ok = false;
+    }
+
+    if (!ok) {
+      nameInput.focus();
+      return;
+    }
+
+    var now = new Date();
+    var days = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+    var months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+    var pad = function(n){ return n < 10 ? '0' + n : '' + n; };
+
+    passName.textContent = name;
+    passDate.textContent = days[now.getDay()] + ', ' + now.getDate() + '. ' + months[now.getMonth()] + ' ' + now.getFullYear();
+    passTime.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds()) + ' Uhr';
+
+    viewInvite.classList.remove('active');
+    viewPass.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function handleBack() {
+    document.getElementById('view-pass').classList.remove('active');
+    document.getElementById('view-invite').classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // Bubbles
+  for (var i = 0; i < 12; i++) {
+    var b = document.createElement('div');
+    b.className = 'bubble';
+    var size = 6 + Math.random() * 18;
+    b.style.width = size + 'px';
+    b.style.height = size + 'px';
+    b.style.left = (Math.random() * 100) + 'vw';
+    b.style.animationDuration = (12 + Math.random() * 14) + 's';
+    b.style.animationDelay = (Math.random() * 10) + 's';
+    document.body.appendChild(b);
+  }
+
+  // Event-Listener binden + onclick als Fallback
+  (function() {
+    var btn = document.getElementById('nextBtn');
+    var back = document.getElementById('backBtn');
+    var nameInput = document.getElementById('name');
+
+    if (btn) {
+      btn.onclick = handleNext;
+      btn.addEventListener('click', handleNext);
+    }
+    if (back) {
+      back.onclick = handleBack;
+      back.addEventListener('click', handleBack);
+    }
+    if (nameInput) {
+      nameInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.keyCode === 13) {
+          e.preventDefault();
+          handleNext();
+        }
+      });
+    }
+  })();
+</script>
+</body>
+</html>
